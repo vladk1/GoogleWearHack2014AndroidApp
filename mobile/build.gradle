@@ -5,8 +5,8 @@ android {
     buildToolsVersion "21.0.2"
 
     defaultConfig {
-        applicationId "com.hack.presentation"
-        minSdkVersion 18
+        applicationId "com.example.fen.hellowear"
+        minSdkVersion 9
         targetSdkVersion 21
         versionCode 1
         versionName "1.0"
@@ -22,5 +22,6 @@ android {
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
     wearApp project(':wear')
-    compile 'com.google.android.gms:play-services:+'
+    compile 'com.android.support:appcompat-v7:21.0.0'
+    compile 'com.google.android.gms:play-services-wearable:6.1.11'
 }
