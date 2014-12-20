@@ -4,5 +4,53 @@
     <string name="app_name">HelloWear</string>
     <string name="hello_round">Hello Round World!</string>
     <string name="hello_square">Hello Square World!</string>
+    <string name="welcome_title">hi</string>
+    <string name="title1textwelcome_text">hi</string>
+
+    <string name="about_title">hi</string>
+    <string name="about_text">hi</string>
+    <string name="cards_title">hi</string>
+    <string name="cards_text">hi</string>
+    <string name="expansion_title">hi</string>
+    <string name="expansion_text">hi</string>
+    <string name="backgrounds_title">hi</string>
+    <string name="backgrounds_text">hi</string>
+    <string name="columns_title">hi</string>
+    <string name="columns_text">hi</string>
+    <string name="dismiss_title">hi</string>
+    <string name="dismiss_text">hi</string>
+
+    <string name="title1">Intro</string>
+    <string name="title2">Amazing Slide</string>
+    <string name="title3">Amazing</string>
+    <string name="title4">Amazing</string>
+    <string name="title5">Amazing</string>
+    <string name="title6">Amazing</string>
+    <string name="title7">Amazing</string>
+    <string name="title8">Amazing</string>
+
+    <string name="title9">Amazing</string>
+    <string name="title10">Amazing</string>
+    <string name="title11">Amazing</string>
+
+    <string name="title12">Amazing</string>
+    <string name="title13">Amazing</string>
+    <string name="title14">Amazing</string>
+
+    <string name="theend">title5</string>
+
+    <string name="title1text"> Droidcon Coke Fanta</string>
+    <string name="title2text">Walkers Droidcon Tea</string>
+    <string name="title3text">Coffee Mocha Sleep</string>
+    <string name="title4text">Hack Skills Matter</string>
+    <string name="title5text">Booom boooom boooom</string>
+    <string name="title6text"> Droidcon Coke Fanta</string>
+    <string name="title7text">Walkers Droidcon Tea</string>
+    <string name="title8text">Coffee Mocha Sleep</string>
+    <string name="title9text">Hack Skills Matter</string>
+    <string name="title10text">Booom boooom boooom</string>
+    <string name="theendtext">To be continued</string>
+
+
 
 </resources>
