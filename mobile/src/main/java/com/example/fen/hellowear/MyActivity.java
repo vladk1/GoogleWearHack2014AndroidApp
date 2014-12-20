@@ -9,7 +9,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
-import android.widget.TextView;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -42,7 +41,6 @@ public class MyActivity extends ActionBarActivity implements GoogleApiClient.Con
     private boolean mResolvingError;
 
     private static final int REQUEST_RESOLVE_ERROR = 1000;
-    private TextView outputView;
     SocketIO socket = null;
     private Button rightButton;
     private Button leftButton;
@@ -54,8 +52,6 @@ public class MyActivity extends ActionBarActivity implements GoogleApiClient.Con
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_my);
-
-        outputView = (TextView) findViewById(R.id.text_output);
 
         rightButton = (Button) findViewById(R.id.button_right);
         rightButton.setOnClickListener(new View.OnClickListener() {
@@ -179,7 +175,7 @@ public class MyActivity extends ActionBarActivity implements GoogleApiClient.Con
             public void run() {
 
                 String message = new String(messageEvent.getData());
-                outputView.setText(message);
+//                outputView.setText(message);
 
                 if (message.equals("up")) {
                     try {
