@@ -23,10 +23,6 @@ public class SampleGridPagerAdapter extends FragmentGridPagerAdapter {
             R.drawable.debug_background_3,
             R.drawable.debug_background_4,
             R.drawable.debug_background_5
-
-
-
-
     };
 
     /** A simple container for static data in each page */
@@ -66,34 +62,30 @@ public class SampleGridPagerAdapter extends FragmentGridPagerAdapter {
 
     private final Page[][] PAGES = {
             {
-                    new Page(R.string.title1, R.string.title1text, R.drawable.bugdroid,
-                            Gravity.BOTTOM),
-                    new Page(R.string.title1, R.string.title1text, R.drawable.bugdroid,
-                            Gravity.BOTTOM)
+                // row 1
+                new Page(R.string.titlec1r1, R.string.textc1r1, R.drawable.bugdroid,
+                        Gravity.BOTTOM),
+                new Page(R.string.titlec2r1, R.string.textc2r1, R.drawable.bugdroid,
+                        Gravity.BOTTOM),
+                new Page(R.string.titlec3r1, R.string.textc3r1, R.drawable.bugdroid,
+                        Gravity.BOTTOM)
             },
             {
-                    new Page(R.string.title2, R.string.title2text, R.drawable.bugdroid,
-                            Gravity.BOTTOM),
-                    new Page(R.string.title1, R.string.title1text, R.drawable.bugdroid,
-                            Gravity.BOTTOM)
+                new Page(R.string.titlec1r2, R.string.textc1r2, R.drawable.bugdroid,
+                        Gravity.BOTTOM),
+                new Page(R.string.titlec2r2, R.string.textc2r2, R.drawable.bugdroid,
+                        Gravity.BOTTOM),
+                new Page(R.string.titlec3r2, R.string.textc3r2, R.drawable.bugdroid,
+                        Gravity.BOTTOM)
             },
             {
-                    new Page(R.string.title3, R.string.title3text, R.drawable.bugdroid,
-                            Gravity.BOTTOM),
-                    new Page(R.string.title1, R.string.title1text, R.drawable.bugdroid,
-                            Gravity.BOTTOM)
-            },
-            {
-                    new Page(R.string.title4, R.string.title4text, R.drawable.bugdroid,
-                            Gravity.BOTTOM),
-                    new Page(R.string.title1, R.string.title1text, R.drawable.bugdroid,
-                            Gravity.BOTTOM)
-            },
-            {
-                    new Page(R.string.title5, R.string.title5text, R.drawable.bugdroid,
-                            Gravity.BOTTOM),
-                    new Page(R.string.theend, R.string.theendtext, true, 2)
-            },
+                new Page(R.string.titlec1r3, R.string.textc1r3, R.drawable.bugdroid,
+                        Gravity.BOTTOM),
+                new Page(R.string.titlec2r3, R.string.textc2r3, R.drawable.bugdroid,
+                        Gravity.BOTTOM),
+                new Page(R.string.titlec3r3, R.string.textc3r3, R.drawable.bugdroid,
+                        Gravity.BOTTOM)
+            }
 
     };
 
@@ -101,16 +93,18 @@ public class SampleGridPagerAdapter extends FragmentGridPagerAdapter {
     public Fragment getFragment(int row, int col) {
         Page page = PAGES[row][col];
 
-            String title = page.titleRes != 0 ? mContext.getString(page.titleRes) : null;
-            String text = page.textRes != 0 ? mContext.getString(page.textRes) : null;
-            CardFragment fragment = CardFragment.create(title, text, page.iconRes);
-            // Advanced settings
-            fragment.setCardGravity(page.cardGravity);
-            fragment.setExpansionEnabled(page.expansionEnabled);
-            fragment.setExpansionDirection(page.expansionDirection);
-            fragment.setExpansionFactor(page.expansionFactor);
-            return fragment;
+
+        String title = page.titleRes != 0 ? mContext.getString(page.titleRes) : null;
+        String text = page.textRes != 0 ? mContext.getString(page.textRes) : null;
+        CardFragment fragment = CardFragment.create(title, text, page.iconRes);
+        // Advanced settings
+        fragment.setCardGravity(page.cardGravity);
+        fragment.setExpansionEnabled(page.expansionEnabled);
+        fragment.setExpansionDirection(page.expansionDirection);
+        fragment.setExpansionFactor(page.expansionFactor);
+        return fragment;
     }
+
 
     @Override
     public ImageReference getBackground(int row, int column) {

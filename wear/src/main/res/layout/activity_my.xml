@@ -1,17 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/white">
+    android:background="@color/white"
+    tools:deviceIds="wear_round">
 
-    <!--<android.support.v4.view.ViewPager-->
+    <!--<android.support.wearable.view.GridViewPager-->
         <!--xmlns:android="http://schemas.android.com/apk/res/android"-->
-        <!--android:id="@+id/pager"-->
+        <!--android:id="@+id/grid_pager"-->
         <!--android:layout_width="match_parent"-->
         <!--android:layout_height="match_parent"-->
-        <!--android:background="#000"/>-->
+        <!--android:keepScreenOn="true" />-->
+    <!---->
 
-    <android.support.wearable.view.GridViewPager
+    <com.example.fen.hellowear.HorizontalListPager
         xmlns:android="http://schemas.android.com/apk/res/android"
         android:id="@+id/grid_pager"
         android:layout_width="match_parent"
@@ -26,22 +29,21 @@
         android:layout_height="wrap_content">
 
         <ImageView
-            android:id="@+id/indicator_0"
-            android:layout_marginRight="5dp"
+            android:id="@+id/indicator_left"
             android:src="@drawable/full_10"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
         <ImageView
-            android:id="@+id/indicator_1"
+            android:id="@+id/indicator_center"
+            android:src="@drawable/empty_10"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+        <ImageView
+            android:id="@+id/indicator_right"
             android:src="@drawable/empty_10"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
     </LinearLayout>
-
-    <!--<Button-->
-        <!--android:id="@+id/submit_button"-->
-        <!--android:layout_width="wrap_content"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--android:text="press me"/>-->
 
 </RelativeLayout>

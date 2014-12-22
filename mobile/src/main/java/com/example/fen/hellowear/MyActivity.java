@@ -30,10 +30,8 @@ import io.socket.SocketIOException;
 
 public class MyActivity extends ActionBarActivity implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener,  MessageApi.MessageListener {
 
-    private static final String PRESNTATION_URL = "http://present-control.herokuapp.com/";
+    private static final String PRESENTATION_URL = "http://present-control.herokuapp.com/";
 
-//    getCurrentAddress gives you json with ip and port of the server
-//    private static final String GET_CURRENT_ADDRESS_URL = "http://present-control.herokuapp.com/getCurrentAddress";
 
     private GoogleApiClient mGoogleApiClient;
 
@@ -46,19 +44,33 @@ public class MyActivity extends ActionBarActivity implements GoogleApiClient.Con
     private Button leftButton;
     private Button topButton;
     private Button bottomButton;
+    private Slide curSlide;
 
-
+    //    /getCurrentSlide/:row/:column
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_my);
+
+        // getting current slide coordinates and info
+        new AsyncTaskParseJson().execute(PRESENTATION_URL + "getCurrentSlide");
+
+        mGoogleApiClient = new GoogleApiClient.Builder(this)
+                .addApi(Wearable.API)
+                .addConnectionCallbacks(this)
+                .addOnConnectionFailedListener(this)
+                .build();
+    }
+
+    private void setUpControlButtons() {
 
         rightButton = (Button) findViewById(R.id.button_right);
         rightButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 try {
-                    swipeRight();
+                    curSlide.setRow(curSlide.getRow() + 1);
+                    swipeToSlide(curSlide);
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
@@ -69,7 +81,12 @@ public class MyActivity extends ActionBarActivity implements GoogleApiClient.Con
             @Override
             public void onClick(View v) {
                 try {
-                    swipeLeft();
+                    Log.wtf("button click","left");
+                    int oldRow = curSlide.getRow();
+                    if (oldRow - 1 >= 0) {
+                        curSlide.setRow(oldRow - 1);
+                    }
+                    swipeToSlide(curSlide);
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
@@ -81,7 +98,12 @@ public class MyActivity extends ActionBarActivity implements GoogleApiClient.Con
             @Override
             public void onClick(View v) {
                 try {
-                    swipeUp();
+                    Log.wtf("button click","top");
+                    int oldColumn = curSlide.getColumn();
+                    if (oldColumn - 1 >= 0) {
+                        curSlide.setColumn(oldColumn - 1);
+                    }
+                    swipeToSlide(curSlide);
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
@@ -93,37 +115,27 @@ public class MyActivity extends ActionBarActivity implements GoogleApiClient.Con
             @Override
             public void onClick(View v) {
                 try {
-                    swipeDown();
+                    curSlide.setColumn(curSlide.getColumn() + 1);
+                    swipeToSlide(curSlide);
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
             }
         });
-
-        mGoogleApiClient = new GoogleApiClient.Builder(this)
-                .addApi(Wearable.API)
-                .addConnectionCallbacks(this)
-                .addOnConnectionFailedListener(this)
-                .build();
     }
 
-    public void swipeRight() throws IOException {
-        Log.wtf("SWIPE RIGHT","SWIPE RIGHT");
+    public void swipeToSlide(Slide newSlide) throws IOException {
+        Log.wtf("swipeToSlide","row="+newSlide.getRow()+" column="+newSlide.getColumn());
 
-        new AsyncTaskParseJson().execute( PRESNTATION_URL +"right_myppt/");
+        ///getCurrentSlide/:row/:column
+        String url = PRESENTATION_URL +"changeSlide/"+ newSlide.getRow() +"/"+ newSlide.getColumn() +"/";
+
+        Log.wtf("swipeToSlide","url="+url);
+
+        new AsyncTaskHttpGet().execute(url);
+
     }
-    public void swipeLeft() throws IOException {
-        Log.wtf("SWIPE LEFT","SWIPE LEFT");
-        new AsyncTaskParseJson().execute(PRESNTATION_URL+"left_myppt/");
-    }
-    public void swipeUp() throws IOException {
-        Log.wtf("SWIPE UP","SWIPE UP");
-        new AsyncTaskParseJson().execute(PRESNTATION_URL+"up_myppt/");
-    }
-    public void swipeDown() throws IOException {
-        Log.wtf("SWIPE DOWN","SWIPE DOWN");
-        new AsyncTaskParseJson().execute(PRESNTATION_URL+"down_myppt/");
-    }
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -175,36 +187,22 @@ public class MyActivity extends ActionBarActivity implements GoogleApiClient.Con
             public void run() {
 
                 String message = new String(messageEvent.getData());
-//                outputView.setText(message);
+                String[] parts = message.split(":"); // row:column
+                int row = Integer.parseInt(parts[0]);
+                int column = Integer.parseInt(parts[1]);
 
-                if (message.equals("up")) {
-                    try {
-                        swipeUp();
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                } else if (message.equals("down")) {
-                    try {
-                        swipeDown();
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                } else if (message.equals("left")) {
-                    try {
-                        swipeLeft();
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                } else if (message.equals("right")) {
-                    try {
-                        swipeRight();
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
+                curSlide.setColumn(column);
+                curSlide.setRow(row);
+
+                try {
+                    swipeToSlide(curSlide);
+                } catch (IOException e) {
+                    e.printStackTrace();
                 }
 
-                Log.wtf(TAG,"message from client:"+messageEvent.toString());
+
             }
+
         });
     }
 
@@ -272,28 +270,42 @@ public class MyActivity extends ActionBarActivity implements GoogleApiClient.Con
     }
 
 
-   // TODO maybe parse some HTTP replies from the presentation to show notes/slides in the app as well
-    public class AsyncTaskParseJson extends AsyncTask<String, String, String> {
+    // TODO maybe parse some HTTP replies from the presentation to show notes/slides in the app as well
+    public class AsyncTaskParseJson extends AsyncTask<String, String, Slide> {
 
         @Override
         protected void onPreExecute() {
         }
 
         @Override
-        protected String doInBackground(String... arg0) {
+        protected Slide doInBackground(String... arg0) {
 
             JsonParser jParser = new JsonParser();
             JSONObject json = jParser.getJSONFromUrl(arg0[0]);
 
             if (json!=null) {
-                // maybe parse reply somehow, but for now just sending request to move slides
+                Log.wtf("AsyncTaskParseJson","json="+json);
+
+                Slide jsonSlide = null;
+                try {
+                    jsonSlide = new Slide(Integer.parseInt(json.get("row").toString()), Integer.parseInt(json.get("column").toString()));
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+
+                return jsonSlide;
             }
 
             return null;
         }
 
         @Override
-        protected void onPostExecute(String strFromDoInBg) {
+        protected void onPostExecute(Slide jsonSlide) {
+            if (jsonSlide != null) {
+                curSlide = jsonSlide;
+            }
+            setUpControlButtons();
+
         }
     }
 

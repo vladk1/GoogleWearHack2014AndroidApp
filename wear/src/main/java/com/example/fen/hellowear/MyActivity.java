@@ -11,13 +11,11 @@ import android.hardware.SensorManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
-import android.support.v4.view.ViewPager;
 import android.support.wearable.view.GridViewPager;
 import android.util.Log;
 import android.view.View;
 import android.view.WindowInsets;
 import android.view.WindowManager;
-import android.widget.Button;
 import android.widget.ImageView;
 
 import com.google.android.gms.common.ConnectionResult;
@@ -64,7 +62,6 @@ public class MyActivity extends Activity implements SensorEventListener, GoogleA
 
     private GoogleApiClient mGoogleApiClient;
     private boolean mResolvingError;
-    private Button mSendButton;
 
     public int oldLineNum;
     public int oldColumNum;
@@ -75,14 +72,10 @@ public class MyActivity extends Activity implements SensorEventListener, GoogleA
     private long mLastTime;
     private boolean mUp;
     private SensorManager mSensorManager;
+    ImageView leftPagePoint;
+    ImageView centerPagePoint;
+    ImageView rightPagePoint;
 
-
-    Node node; // the connected device to send the message to
-    private TimerFragment timerFragment;
-    private NavigationFragment navigationFragment;
-    private ViewPager mPager;
-    private ImageView mFirstIndicator;
-    private ImageView mSecondIndicator;
     private Sensor mSensor;
 
     public MyActivity() {
@@ -94,6 +87,12 @@ public class MyActivity extends Activity implements SensorEventListener, GoogleA
         setContentView(R.layout.activity_my);
         final Resources res = getResources();
 
+        leftPagePoint = (ImageView) findViewById(R.id.indicator_left);
+        centerPagePoint = (ImageView) findViewById(R.id.indicator_center);
+        rightPagePoint = (ImageView) findViewById(R.id.indicator_right);
+
+
+
         mGoogleApiClient = new GoogleApiClient.Builder(this)
                 .addApi(Wearable.API)
                 .addConnectionCallbacks(this)
@@ -103,7 +102,8 @@ public class MyActivity extends Activity implements SensorEventListener, GoogleA
         mSensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
         mSensor = mSensorManager.getDefaultSensor(Sensor.TYPE_GRAVITY);
 
-        final GridViewPager pager = (android.support.wearable.view.GridViewPager) findViewById(R.id.grid_pager);
+//        final GridViewPager pager = (android.support.wearable.view.GridViewPager) findViewById(R.id.grid_pager);
+        final HorizontalListPager pager = (HorizontalListPager) findViewById(R.id.grid_pager);
         pager.setOnApplyWindowInsetsListener(new View.OnApplyWindowInsetsListener() {
             @Override
             public WindowInsets onApplyWindowInsets(View v, WindowInsets insets) {
@@ -123,21 +123,22 @@ public class MyActivity extends Activity implements SensorEventListener, GoogleA
                 return insets;
             }
         });
+
         pager.setAdapter(new SampleGridPagerAdapter(this, getFragmentManager()));
         pager.setOnPageChangeListener(new GridViewPager.OnPageChangeListener() {
 
             @Override
             public void onPageScrolled(int curLineNum, int curColumnNum, float v, float v2, int i3, int i4) {
-//
-                if (curColumnNum<oldColumNum) {
+//                updateNavigationPoint(curColumnNum);
+                if (curColumnNum < oldColumNum) {
                     new StartWearableActivityMessage("left").execute();
-                } else if (curColumnNum>oldColumNum) {
+                } else if (curColumnNum > oldColumNum) {
                     new StartWearableActivityMessage("right").execute();
                 }
 
-                if (curLineNum<oldLineNum) {
+                if (curLineNum < oldLineNum) {
                     new StartWearableActivityMessage("up").execute();
-                } else if (curLineNum>oldLineNum) {
+                } else if (curLineNum > oldLineNum) {
                     new StartWearableActivityMessage("down").execute();
                 }
 
@@ -153,8 +154,7 @@ public class MyActivity extends Activity implements SensorEventListener, GoogleA
 
             @Override
             public void onPageSelected(int curLineNum, int curColumnNum) {
-
-
+                updateNavigationPoint(curColumnNum);
             }
 
             @Override
@@ -163,19 +163,36 @@ public class MyActivity extends Activity implements SensorEventListener, GoogleA
             }
         });
 
-//        mSendButton = (Button) findViewById(R.id.submit_button);
-//        mSendButton.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                Log.wtf(TAG, "cliiick");
-//                new StartWearableActivityMessage().execute();
-//            }
-//        });
-
-
-//        new StartWearableActivityMessage("left").execute();
     }
 
+
+    private void updateNavigationPoint(int col) {
+        Log.wtf("updateNavigationPoint", "col="+col);
+//        View root = ((Activity)mContext).getWindow().getDecorView().findViewById(android.R.id.content);
+
+        switch(col) {
+            case 0:
+                leftPagePoint.setImageResource(R.drawable.full_10);
+                centerPagePoint.setImageResource(R.drawable.empty_10);
+                Log.wtf("updateNavigationPoint", "0 updated");
+                break;
+
+            case 1:
+                centerPagePoint.setImageResource(R.drawable.full_10);
+                leftPagePoint.setImageResource(R.drawable.empty_10);
+                rightPagePoint.setImageResource(R.drawable.empty_10);
+                Log.wtf("updateNavigationPoint", "1 updated");
+                break;
+
+            case 2:
+                rightPagePoint.setImageResource(R.drawable.full_10);
+                centerPagePoint.setImageResource(R.drawable.empty_10);
+                Log.wtf("updateNavigationPoint", "2 updated");
+                break;
+
+
+        }
+    }
 
 
     private class StartWearableActivityMessage extends AsyncTask<Void, Void, Void> {
@@ -255,14 +272,12 @@ public class MyActivity extends Activity implements SensorEventListener, GoogleA
     public void onConnected(Bundle bundle) {
         Log.wtf(TAG, "Google API Client was connected");
         mResolvingError = false;
-//        mSendButton.setEnabled(true);
 
         Wearable.MessageApi.addListener(mGoogleApiClient, this);
     }
     @Override
     public void onConnectionSuspended(int i) {
         Log.wtf(TAG, "Connection to Google API client was suspended");
-//        mSendButton.setEnabled(false);
     }
 
     @Override

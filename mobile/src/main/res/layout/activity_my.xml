@@ -18,7 +18,7 @@
             android:layout_height="wrap_content"
             android:layout_alignParentTop="true"
             android:layout_centerHorizontal="true"
-            android:text="text me"/>
+            android:text="top"/>
 
         <Button
             android:id="@+id/button_left"
@@ -26,7 +26,7 @@
             android:layout_height="wrap_content"
             android:layout_alignParentLeft="true"
             android:layout_centerVertical="true"
-            android:text="text me"/>
+            android:text="left"/>
 
         <Button
             android:id="@+id/button_right"
@@ -34,7 +34,7 @@
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
             android:layout_alignParentRight="true"
-            android:text="text me"/>
+            android:text="right"/>
 
         <Button
             android:id="@+id/button_bottom"
@@ -42,7 +42,7 @@
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
             android:layout_centerHorizontal="true"
-            android:text="text me"/>
+            android:text="bottom"/>
 
 
     </RelativeLayout>

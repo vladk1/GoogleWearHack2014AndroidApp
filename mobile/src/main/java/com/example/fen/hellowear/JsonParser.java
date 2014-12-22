@@ -7,15 +7,22 @@ import org.apache.http.HttpResponse;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.DefaultHttpClient;
+import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
 
 public class JsonParser {
 
-    static InputStream is = null;
+    final String TAG = "JsonParser.java";
+
+    static InputStream inputStream = null;
+    static JSONObject jObj = null;
+    static String json = "";
 
     public JSONObject getJSONFromUrl(String url) {
         Log.wtf("getJSONFromUrl ","url="+url);
@@ -26,7 +33,7 @@ public class JsonParser {
 
             HttpResponse httpResponse = httpClient.execute(httpGet);
             HttpEntity httpEntity = httpResponse.getEntity();
-            is = httpEntity.getContent();
+            inputStream = httpEntity.getContent();
 
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
@@ -36,6 +43,33 @@ public class JsonParser {
             e.printStackTrace();
         }
 
+        return constructJSONObject(inputStream);
+    }
+
+    private JSONObject constructJSONObject(InputStream inputStream) {
+        try {
+            BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream, "iso-8859-1"), 8);
+            StringBuilder sb = new StringBuilder();
+            String line = null;
+            while ((line = reader.readLine()) != null) {
+                sb.append(line + "n");
+            }
+            inputStream.close();
+            json = sb.toString();
+
+            Log.wtf("got json", "json="+json);
+
+        } catch (Exception e) {
+            Log.e(TAG, "Error converting result " + e.toString());
+        }
+
+        // try parse the string to a JSON object
+        try {
+            Log.wtf("printing json","json="+json);
+            return jObj = new JSONObject(json);
+        } catch (JSONException e) {
+            Log.e(TAG, "Error parsing data " + e.toString());
+        }
         return null;
     }
 }
